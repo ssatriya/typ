@@ -6,8 +6,7 @@
 
 @layer base {
   html {
-    font-family: "Roboto Mono", monospace;
+    font-family: "Roboto Mono", sans-serif;
     background-color: rgb(13, 31, 24);
-    color: rgb(213, 179, 79);
   }
 }

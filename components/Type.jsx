@@ -2,12 +2,11 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import randomWords from "random-words";
 
-import { setActiveWordRef, setCaretRef, setWordLlists } from "../store2/action";
-import Letter from "./Letter";
+import { setActiveWordRef, setCaretRef, setWordLlists } from "../store/action";
 
 export default function Type() {
   const dispatch = useDispatch();
-  const wordRef = useRef(null);
+  const activeWordRef = useRef(null);
   const caretRef = useRef(null);
   const { wordList, currentWord, typedWord, typedWordHistory } = useSelector(
     (state) => state.word
@@ -16,26 +15,26 @@ export default function Type() {
   const extraLetters = typedWord.slice(currentWord.length).split("");
 
   useEffect(() => {
-    const words = randomWords(10);
+    const words = randomWords(30);
     dispatch(setWordLlists(words));
   }, []);
 
   useEffect(() => {
-    dispatch(setActiveWordRef(wordRef));
+    dispatch(setActiveWordRef(activeWordRef));
     dispatch(setCaretRef(caretRef));
   }, []);
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="flex">
+    <div className="text-yellow-600 text-opacity-90">
+      <div className="flex w-[700px] flex-wrap h-[140px] overflow-hidden">
         {wordList.map((word, wIdx) => {
           const isActive =
             word === currentWord && typedWordHistory.length === wIdx;
           return (
             <div
               key={word + wIdx}
-              ref={isActive ? wordRef : null}
-              className="flex mt-[5px] mr-[12px] text-[28px] font-normal relative"
+              ref={isActive ? activeWordRef : null}
+              className={`flex mt-[5px] mr-[12px] text-[28px] font-normal relative`}
             >
               {isActive ? (
                 <span
@@ -49,18 +48,26 @@ export default function Type() {
                 </span>
               ) : null}
               {word.split("").map((char, cId) => {
-                return <Letter key={char + cId}>{char}</Letter>;
+                return <span key={char + cId}>{char}</span>;
               })}
               {isActive
                 ? extraLetters.map((char, cIdx) => {
-                    return <span key={char + cIdx}>{char}</span>;
+                    return (
+                      <span key={char + cIdx} className="text-yellow-900">
+                        {char}
+                      </span>
+                    );
                   })
                 : typedWordHistory[wIdx]
                 ? typedWordHistory[wIdx]
                     .slice(wordList[wIdx]?.length)
                     .split("")
                     .map((char, cIdx) => {
-                      return <span key={char + cIdx}>{char}</span>;
+                      return (
+                        <span key={char + cIdx} className="text-yellow-900">
+                          {char}
+                        </span>
+                      );
                     })
                 : null}
             </div>

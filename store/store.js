@@ -1,9 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
+const { createStore } = require("@reduxjs/toolkit");
 
-import wordReducer from "./wordSlice";
+import reducer from "./reducer";
 
-export const store = configureStore({
-  reducer: {
-    word: wordReducer,
-  },
-});
+const store = createStore(reducer);
+
+export default store;
