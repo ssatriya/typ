@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import randomWords from "random-words";
 
-import { setActiveWordRef, setCaretRef, setWordLlists } from "../store/action";
+import { setActiveWordRef, setCaretRef, setWordLists } from "../store/action";
+import { GenerateWords } from "@/helpers/GenerateWords";
 
 export default function Type() {
   const dispatch = useDispatch();
@@ -15,18 +15,20 @@ export default function Type() {
   const extraLetters = typedWord.slice(currentWord.length).split("");
 
   useEffect(() => {
-    const words = randomWords(30);
-    dispatch(setWordLlists(words));
+    GenerateWords();
+    console.log("Test");
   }, []);
 
   useEffect(() => {
     dispatch(setActiveWordRef(activeWordRef));
     dispatch(setCaretRef(caretRef));
-  }, []);
+  }, [dispatch]);
+
+  console.log(wordList);
 
   return (
     <div className="text-yellow-600 text-opacity-90">
-      <div className="flex w-[700px] flex-wrap h-[140px] overflow-hidden">
+      <div className="flex w-[700px] flex-wrap h-[150px] overflow-hidden">
         {wordList.map((word, wIdx) => {
           const isActive =
             word === currentWord && typedWordHistory.length === wIdx;

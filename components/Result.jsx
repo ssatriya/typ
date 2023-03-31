@@ -33,7 +33,7 @@ export default function Result() {
     accuracy = (Number(correctChar) / Number(totalChar)) * 100;
 
   return (
-    <div className="text-yellow-300 mt-12">
+    <div className="text-yellow-600 mt-12">
       <div>{wpm} Word Per Minute</div>
       <div>Correct Words: </div>
       <div>Incorrect Words: </div>

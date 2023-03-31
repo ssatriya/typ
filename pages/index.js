@@ -1,13 +1,33 @@
 import Result from "@/components/Result";
 import Type from "@/components/Type";
 import { input } from "@/helpers/Input";
+import { Reset } from "@/helpers/Reset";
+import { Timer } from "@/helpers/Timer";
+import { setGameStatus } from "@/store/action";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
-  const { typedWord, activeWordRef, currentWord, caretRef } = useSelector(
-    (state) => state.word
-  );
+  const {
+    typedWord,
+    activeWordRef,
+    currentWord,
+    gameStatus,
+    currentTime,
+    timerId,
+  } = useSelector((state) => state.word);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentTime !== 0) {
+      if (gameStatus === "start") {
+        Timer();
+      }
+    } else {
+      dispatch(setGameStatus("finish"));
+    }
+    clearInterval(timerId);
+  }, [currentTime, gameStatus]);
 
   useEffect(() => {
     document.onkeydown = (e) => {
@@ -15,15 +35,21 @@ export default function Home() {
         e.preventDefault();
       } else if (e.ctrlKey && e.key === "r") {
         location.reload();
-      } else if (
-        e.key.length === 1 ||
-        e.key === "Backspace" ||
-        e.key === "Tab"
-      ) {
+      } else if (e.key.length === 1 || e.key === "Backspace") {
+        if (currentTime === 0) return;
+        e.preventDefault();
         input(e.key, e.ctrlKey);
+      } else if (e.key === "Tab") {
+        Reset();
       }
     };
-  }, []);
+
+    console.log(currentTime, gameStatus);
+
+    return () => {
+      document.onkeydown = null;
+    };
+  }, [currentTime]);
 
   useEffect(() => {
     const idx = typedWord?.length - 1;

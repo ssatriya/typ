@@ -1,5 +1,6 @@
 import store from "@/store/store";
-import { appendTypedWord, setTypedChar } from "@/store/action";
+import { appendTypedWord, setTypedChar, setGameStatus } from "@/store/action";
+import { Reset } from "./Reset";
 
 function handleBackspace(key) {
   const { dispatch, getState } = store;
@@ -18,7 +19,7 @@ function handleBackspace(key) {
 export function input(key, ctrlKey) {
   const { dispatch, getState } = store;
   const {
-    word: { activeWordRef, typedWord },
+    word: { activeWordRef, typedWord, gameStatus },
   } = getState();
 
   const currWordEl = activeWordRef.current;
@@ -34,7 +35,11 @@ export function input(key, ctrlKey) {
       if (typedWord === "") return;
       handleBackspace(key);
       break;
+    case "Tab":
+      Reset();
+      break;
     default:
+      dispatch(setGameStatus("start"));
       dispatch(setTypedChar(typedWord + key));
       break;
   }
